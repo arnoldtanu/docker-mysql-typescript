@@ -1,0 +1,58 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": { 
+    "no-var": "off",
+    "eol-last": "off",
+    "space-infix-ops": "warn",
+    "no-shadow": "off",
+    "no-unneeded-ternary": "warn",
+    "no-nested-ternary": "warn",
+    "no-duplicate-imports": "warn",
+    "no-console": "warn",
+    "no-lonely-if": "warn",
+    "no-trailing-spaces": "error",
+    "no-prototype-builtins": "warn",
+    "no-multi-spaces": "warn",
+    "no-multiple-empty-lines": ["warn", { "max": 1, "maxEOF": 0 }],
+    "block-spacing": "warn",
+    "keyword-spacing": ["warn", { "before": true, "after": true }],
+    "key-spacing": ["warn", { 
+      "singleLine": { "beforeColon": false, "afterColon": true }, 
+      "multiLine": { "beforeColon": false, "afterColon": true }}],
+    "arrow-spacing": "warn",
+    "func-call-spacing": "warn",
+    "generator-star-spacing": ["error", { "before": false, "after": true }],
+    "object-curly-spacing": ["error", "always"],
+    "object-curly-newline": ["error", { "consistent": true }],
+    "object-property-newline": ["warn", { "allowAllPropertiesOnSameLine": true }],
+    "space-before-blocks": "warn",
+    "space-before-function-paren": ["warn", { "anonymous": "never", "named": "never", "asyncArrow": "always"}],
+    "space-in-parens": "warn",
+    "array-bracket-spacing": ["error", "never"],
+    "array-bracket-newline": ["error", "consistent"],
+    "array-element-newline": ["error", "consistent"],
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
+    "max-len": [ "warn", { "code": 180, "tabWidth": 2 } ],
+    "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+    "curly": ["warn", "multi-line"],
+    "template-curly-spacing": ["warn", "never"],
+    "dot-notation": "warn",
+    "arrow-parens": ["warn", "always"],
+    "comma-style": ["warn", "last"],
+    "comma-spacing": "warn",
+    "comma-dangle": ["warn", "always-multiline"],
+    "camelcase": "off",
+    "new-cap": "off",
+    "semi": "error",
+    "no-unused-vars": "off"
+  }
+}
