@@ -1,2 +1,6 @@
-var aaaa = "AAA";
-console.log('Hello world!');
+import askInput from "./controller/input";
+
+const run = async () => {
+  await askInput();
+};
+run();

@@ -11,13 +11,14 @@
   ],
   "rules": { 
     "no-var": "off",
+
     "eol-last": "off",
     "space-infix-ops": "warn",
     "no-shadow": "off",
     "no-unneeded-ternary": "warn",
     "no-nested-ternary": "warn",
     "no-duplicate-imports": "warn",
-    "no-console": "warn",
+    "no-console": "off",
     "no-lonely-if": "warn",
     "no-trailing-spaces": "error",
     "no-prototype-builtins": "warn",
@@ -53,6 +54,7 @@
     "camelcase": "off",
     "new-cap": "off",
     "semi": "error",
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "prefer-const": "off"
   }
 }
