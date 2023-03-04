@@ -1,8 +1,8 @@
 import { v1 as uuid } from "uuid";
-import { binToUUIDStringQuery, uuidStringToBinQuery } from "../helper/common_helper";
+import { binToUUIDStringQuery, uuidStringToBinQuery } from "../helpers/common_helper";
 import { db } from "./mysql";
 import { MysqlError } from "mysql";
-import { IBalanceDebt, IDebt, ITransactionQueue, IUserFinancial } from "../helper/interfaces";
+import { IBalanceDebt, IDebt, ITransactionQueue, IUserFinancial } from "../helpers/interfaces";
 
 export const getUserBalanceDebt = (uuid: string) => { //OKE
   return new Promise<IBalanceDebt>((resolve, reject) => {
@@ -66,7 +66,6 @@ export const doWithdraw = (userID: string, balanceDebt: IBalanceDebt, amount: nu
 };
 
 export const getUserDebt = async (userID:string, page:number, oneDataAtTime = true, lenderID = "") => {
-  // console.log("getUserDebt");
   return new Promise<IDebt[]>((resolve, reject) => {
     let stmt = `SELECT ${binToUUIDStringQuery('uuid')} as uuid,
                       ${binToUUIDStringQuery('debtor')} as debtor,
@@ -75,10 +74,8 @@ export const getUserDebt = async (userID:string, page:number, oneDataAtTime = tr
                 FROM debt WHERE is_paid = false AND debtor = ${uuidStringToBinQuery(userID)}`;
     if (lenderID !== "") stmt += ` AND lender = ${uuidStringToBinQuery(lenderID)}`;
     if (oneDataAtTime) stmt += ` ORDER BY created_at LIMIT ${page},1`;
-    // console.log("_____ query e: ", stmt);
     const param : string[] = [];
     db.query(stmt, param, (err:MysqlError | null, results: any) => {
-      // console.log("_____ hasil query : ", results);
       if (err) reject(err);
       if (typeof results[0] != "undefined") {
         resolve(results);
@@ -119,7 +116,6 @@ const updateUserBalance = async (params:IUpdateUserBalance) => {
   return new Promise<boolean>((resolve, reject) => {
     let stmt = `UPDATE user SET balance = ?, outstanding_debt = ?, updated_at = ? WHERE uuid = ${uuidStringToBinQuery(params.uuid)}`;
     const param = [params.balance, params.outstanding_debt, params.updated_at];
-    console.log("_____ updateUserBalance", params);
     db.query(stmt, param, (err:MysqlError | null, results: any) => {
       if (err) reject(err);
       resolve(results);
@@ -138,7 +134,6 @@ const updateDebt = async (params:IUpdateDebt) => {
   return new Promise<boolean>((resolve, reject) => {
     let stmt = `UPDATE debt SET amount = ?, is_paid = ?, updated_at = ? WHERE uuid = ${uuidStringToBinQuery(params.uuid)}`;
     const param = [params.amount, params.is_paid, params.updated_at];
-    console.log("_____ updateUserBalance", params);
     db.query(stmt, param, (err:MysqlError | null, results: any) => {
       if (err) reject(err);
       resolve(results);

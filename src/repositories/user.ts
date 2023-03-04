@@ -1,5 +1,5 @@
 import { v1 as uuid } from "uuid";
-import { uuidStringToBinQuery, binToUUIDStringQuery } from "../helper/common_helper";
+import { uuidStringToBinQuery, binToUUIDStringQuery } from "../helpers/common_helper";
 import { db } from "./mysql";
 import { MysqlError } from "mysql";
 

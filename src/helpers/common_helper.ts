@@ -1,7 +1,7 @@
 import { v1 as uuid } from "uuid";
 
 export const capitalizeFirstLetter = (string: string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase;
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
 export const uuidStringToBinQuery = (uuid: string, withQuotes = true) => {

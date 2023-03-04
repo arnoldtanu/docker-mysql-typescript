@@ -1,4 +1,4 @@
-import { IBalanceDebt, IDebt } from "../helper/interfaces";
+import { IBalanceDebt, IDebt } from "../helpers/interfaces";
 
 export enum TRANSTYPE {
   DEPOSIT = "DEPOSIT",
