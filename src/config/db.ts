@@ -6,8 +6,8 @@ export interface IdbConfig {
 }
 
 export const dbConfig: IdbConfig = {
-  host: process.env.DB_HOST || "localhost",
-  database: process.env.DB_DATABASE || "atm",
-  user: process.env.DB_USERNAME || "root",
-  password: process.env.DB_PASSWORD || "",
+  host: "db", //process.env.DB_HOST || "localhost",
+  database: "atm", //process.env.DB_DATABASE || "atm",
+  user: "root", //process.env.DB_USERNAME || "root",
+  password: "password", //process.env.DB_PASSWORD || "password",
 };

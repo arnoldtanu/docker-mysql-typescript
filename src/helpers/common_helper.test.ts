@@ -6,6 +6,7 @@ describe('Test Common Helper', () => {
       expect(capitalizeFirstLetter('FOOD')).toEqual('Food');
       expect(capitalizeFirstLetter('food')).toEqual('Food');
       expect(capitalizeFirstLetter('fOoD')).toEqual('Food');
+      expect(capitalizeFirstLetter('****')).toEqual('****');
     });
   });
 });

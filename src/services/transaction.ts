@@ -64,7 +64,7 @@ export const depositAndTransfer = async (senderID : string, senderBalance : IBal
   }
 };
 
-const sendMoneyToReceiver = async (userBalanceCache: Map<string, IBalanceDebt>, debtHistoryCache: Map<string, IDebt>, transactionQueue: ITransactionQueue[],
+export const sendMoneyToReceiver = async (userBalanceCache: Map<string, IBalanceDebt>, debtHistoryCache: Map<string, IDebt>, transactionQueue: ITransactionQueue[],
   queueNumber:number) => {
   try {
     const transaction = transactionQueue[queueNumber];
@@ -84,7 +84,7 @@ const sendMoneyToReceiver = async (userBalanceCache: Map<string, IBalanceDebt>, 
   }
 };
 
-const getDebtListUserShouldPay = async (tempUserBalance:IBalanceDebt, transaction:ITransactionQueue, debtHistoryCache:Map<string, IDebt>, transactionQueue:ITransactionQueue[]) => {
+export const getDebtListUserShouldPay = async (tempUserBalance:IBalanceDebt, transaction:ITransactionQueue, debtHistoryCache:Map<string, IDebt>, transactionQueue:ITransactionQueue[]) => {
   if (tempUserBalance.debt <= tempUserBalance.balance) {
     //if user can pay all his/her's debt
     let allData : IDebt[] = await getUserDebt(transaction.toID, 0, false); //TODO: pas getuserdebt, sekalian return in data id pengutang
@@ -130,7 +130,7 @@ const getDebtListUserShouldPay = async (tempUserBalance:IBalanceDebt, transactio
   }
 };
 
-const takeMoneyFromSender = async (userBalanceCache: Map<string, IBalanceDebt>, debtHistoryCache: Map<string, IDebt>, newDebtRecord:IDebt[], transaction: ITransactionQueue) => {
+export const takeMoneyFromSender = async (userBalanceCache: Map<string, IBalanceDebt>, debtHistoryCache: Map<string, IDebt>, newDebtRecord:IDebt[], transaction: ITransactionQueue) => {
   try {
     // get sender's balance
     const tempUserBalance = (!userBalanceCache.has(transaction.fromID)) ? await getUserBalanceDebt(transaction.fromID) :
@@ -158,7 +158,7 @@ const takeMoneyFromSender = async (userBalanceCache: Map<string, IBalanceDebt>, 
         else tempDebt.amount -= transaction.amount;
         tempUserBalance.debt -= transaction.amount;
         debtHistoryCache.set(transaction.debtID, tempDebt);
-      } else {
+      } else if (underpayment > 0) {
         tempUserBalance.debt += underpayment;
         newDebtRecord.push({
           uuid: createUUID(),
@@ -176,7 +176,7 @@ const takeMoneyFromSender = async (userBalanceCache: Map<string, IBalanceDebt>, 
   }
 };
 
-const payDebtWithDebt = async (userBalanceCache:Map<string, IBalanceDebt>, transaction:ITransactionQueue, debtHistoryCache: Map<string, IDebt>) => {
+export const payDebtWithDebt = async (userBalanceCache:Map<string, IBalanceDebt>, transaction:ITransactionQueue, debtHistoryCache: Map<string, IDebt>) => {
   let page = 0;
   let keepIterate = true;
   const receiverBalance = (!userBalanceCache.has(transaction.toID)) ? await getUserBalanceDebt(transaction.toID) :
@@ -186,14 +186,17 @@ const payDebtWithDebt = async (userBalanceCache:Map<string, IBalanceDebt>, trans
     if (data.length <= 0 || transaction.amount <= 0) keepIterate = false;
     else {
       transaction.amount -= data[0].amount;
-      if (transaction.amount >= 0) {
+      if (transaction.amount > 0) {
         receiverBalance.debt -= data[0].amount;
         data[0].amount = 0;
       } else {
+        const temp = data[0].amount;
         data[0].amount = 0 - transaction.amount;
+        receiverBalance.debt -= (temp - data[0].amount);
         transaction.amount = 0;
-        receiverBalance.debt -= transaction.originalAmount;
+        keepIterate = false;
       }
+      if (receiverBalance.debt === 0) keepIterate = false;
       debtHistoryCache.set(data[0].uuid, data[0]);
     }
     page++;

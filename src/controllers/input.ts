@@ -45,7 +45,7 @@ export const checkInput = async (rl: readline.Interface, currentUser:IUser, user
   rl.prompt();
 };
 
-const validateCommand = (currentUser:IUser, command: string[], numRequiredParams: number) => { //TODO: taruh dek folder validator, tp masih ok kl disini
+export const validateCommand = (currentUser:IUser, command: string[], numRequiredParams: number) => { //TODO: taruh dek folder validator, tp masih ok kl disini
   if ((command.length != numRequiredParams) || (numRequiredParams === 3 && command[1] === "")) {
     console.log("wrong command, please use HELP command for more information.");//TODO: console log error, ganti ke throw error
     return false;
@@ -59,7 +59,7 @@ const validateCommand = (currentUser:IUser, command: string[], numRequiredParams
   return true;
 };
 
-const printHelp = () => {
+export const printHelp = () => {
   console.log(`commands:\n  
   * 'login [name]' - Logs in as this customer and creates the customer if not exist\n
   * 'deposit [amount]' - Deposits this amount to the logged in customer\n
@@ -69,7 +69,7 @@ const printHelp = () => {
   * 'exit' or 'quit' - Exit from ATM\n`);
 };
 
-const changeCurrentUser = (currentUser:IUser, name?:string, uuid?:string) => {
+export const changeCurrentUser = (currentUser:IUser, name?:string, uuid?:string) => {
   if (name && uuid) {
     currentUser.name = name;
     currentUser.uuid = uuid;

@@ -4,7 +4,7 @@ import { db } from "./mysql";
 import { MysqlError } from "mysql";
 import { IBalanceDebt, IDebt, ITransactionQueue, IUserFinancial } from "../helpers/interfaces";
 
-export const getUserBalanceDebt = (uuid: string) => { //OKE
+export const getUserBalanceDebt = (uuid: string) => {
   return new Promise<IBalanceDebt>((resolve, reject) => {
     const stmt = `SELECT balance, outstanding_debt FROM user WHERE uuid = ${uuidStringToBinQuery(uuid)}`;
     const param : string[] = [];

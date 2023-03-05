@@ -4,12 +4,14 @@ services:
     build: ./db
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: test
+      MYSQL_DATABASE: atm
     restart: always
   web:
+    tty: true
+    stdin_open: true
     build: .
     environment:
-      MYSQL_DATABASE: test
+      MYSQL_DATABASE: atm
       MYSQL_USER: root
       MYSQL_PASSWORD: password
       MYSQL_HOST: db
