@@ -47,9 +47,9 @@ export const checkInput = async (rl: readline.Interface, currentUser:IUser, user
   rl.prompt();
 };
 
-export const validateCommand = (currentUser:IUser, command: string[], numRequiredParams: number) => { //TODO: taruh dek folder validator, tp masih ok kl disini
+export const validateCommand = (currentUser:IUser, command: string[], numRequiredParams: number) => {
   if ((command.length != numRequiredParams) || (numRequiredParams === 3 && command[1] === "")) {
-    console.log("wrong command, please use HELP command for more information.");//TODO: console log error, ganti ke throw error
+    console.log("wrong command, please use HELP command for more information.");
     return false;
   } else if (parseInt(command[command.length - 1]) <= 0 || isNaN(parseInt(command[command.length - 1]))) {
     console.log("amount must be numeric and greater than 0");
