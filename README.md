@@ -31,7 +31,7 @@ npm start
 #### 2. Without using docker
 - Clone this project.
 - Please install nodeJS and the database on your computer, mysql or mariaDB can be used in this project.
-- Setup the database connection in `.env`, change the values according to your database settings:
+- Rename file `.env.example` to `.env` to setup the database connection, change the values according to your database settings:
 ```
 DB_HOST=db
 DB_DATABASE=atm
