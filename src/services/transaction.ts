@@ -1,13 +1,15 @@
-import { createUUID } from "../helpers/common_helper";
+import { capitalizeFirstLetter, createUUID } from "../helpers/common_helper";
 import { IBalanceDebt, IDebt, ITransactionQueue, IUserFinancial } from "../helpers/interfaces";
 import { getUserBalanceDebt, doWithdraw, getUserDebt, getUserFinancialList, doDepositAndTransfer } from "../repositories/transaction";
 import { defaultDebt, defaultUserBalance, TRANSTYPE } from "../assets/constant";
-import { getUserIDAndBalance, IUserIDAndBalance } from "../repositories/user";
+import { getUserIDAndBalance, getUserName, IUserIDAndBalance } from "../repositories/user";
 
 export const deposit = async (uuid : string, amount : number) => {
   try {
     let balanceAndDebt : IBalanceDebt = await getUserBalanceDebt(uuid);
-    return depositAndTransfer(uuid, balanceAndDebt, uuid, balanceAndDebt, amount);
+    const data = await depositAndTransfer(uuid, balanceAndDebt, uuid, balanceAndDebt, amount);
+    await printUserFinancialList(uuid, data ?? defaultUserBalance);
+    return data;
   } catch (e) {
     console.log("error:", e);
   }
@@ -24,14 +26,16 @@ export const transfer = async (senderID : string, receiverName:string, amount: n
         balance: receiverData.balance,
         debt: receiverData.debt,
       };
-      return depositAndTransfer(senderID, senderBalance, receiverData.uuid, receiverBalance, amount);
+      const data = await depositAndTransfer(senderID, senderBalance, receiverData.uuid, receiverBalance, amount, receiverName);
+      await printUserFinancialList(senderID, data ?? defaultUserBalance);
+      return data;
     }
   } catch (e) {
     console.log("error:", e);
   }
 };
 
-export const depositAndTransfer = async (senderID : string, senderBalance : IBalanceDebt, receiverID:string, receiverBalance : IBalanceDebt, amount : number) => {
+export const depositAndTransfer = async (senderID : string, senderBalance : IBalanceDebt, receiverID:string, receiverBalance : IBalanceDebt, amount : number, receiverName? : string) => {
   try {
     let queueNumber = 0;
     const userBalanceCache = new Map<string, IBalanceDebt>([[senderID, senderBalance]]);
@@ -53,7 +57,16 @@ export const depositAndTransfer = async (senderID : string, senderBalance : IBal
       if (transactionQueue[queueNumber].transType === TRANSTYPE.TRANSFER || transactionQueue[queueNumber].transType === TRANSTYPE.DEBT) {
         await takeMoneyFromSender(userBalanceCache, debtHistoryCache, newDebtRecord, transactionQueue[queueNumber]);
       }
-      if (transactionQueue[queueNumber].amount > 0) await sendMoneyToReceiver(userBalanceCache, debtHistoryCache, transactionQueue, queueNumber);
+      if (transactionQueue[queueNumber].amount > 0) {
+        await sendMoneyToReceiver(userBalanceCache, debtHistoryCache, transactionQueue, queueNumber);
+        if (transactionQueue[queueNumber].fromID === senderID && transactionQueue[queueNumber].fromID != transactionQueue[queueNumber].toID) {
+          let tempName = receiverName;
+          if (!receiverName || (receiverName && transactionQueue[queueNumber].toID === receiverID)) {
+            tempName = await getUserName(transactionQueue[queueNumber].toID);
+          }
+          console.log('Transferred $' + transactionQueue[queueNumber].amount + ' to ' + capitalizeFirstLetter(tempName ?? ""));
+        }
+      }
       queueNumber++;
     }
 
@@ -160,6 +173,7 @@ export const takeMoneyFromSender = async (userBalanceCache: Map<string, IBalance
         debtHistoryCache.set(transaction.debtID, tempDebt);
       } else if (underpayment > 0) {
         tempUserBalance.debt += underpayment;
+        tempUserBalance.balance = 0;
         newDebtRecord.push({
           uuid: createUUID(),
           debtor: transaction.fromID,

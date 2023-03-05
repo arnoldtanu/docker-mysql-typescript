@@ -1,5 +1,4 @@
-import { v1 as uuid } from "uuid";
-import { binToUUIDStringQuery, uuidStringToBinQuery } from "../helpers/common_helper";
+import { binToUUIDStringQuery, createUUID, uuidStringToBinQuery } from "../helpers/common_helper";
 import { db } from "./mysql";
 import { MysqlError } from "mysql";
 import { IBalanceDebt, IDebt, ITransactionQueue, IUserFinancial } from "../helpers/interfaces";
@@ -10,15 +9,15 @@ export const getUserBalanceDebt = (uuid: string) => {
     const param : string[] = [];
     db.query(stmt, param, (err:MysqlError | null, results: any) => {
       if (err) reject(err);
-      if (typeof results[0] === "undefined") {
-        resolve({
-          balance: 0,
-          debt: 0,
-        });
-      } else {
+      if (typeof results.length != "undefined" && results.length > 0) {
         resolve({
           balance: results[0].balance,
           debt: results[0].outstanding_debt,
+        });
+      } else {
+        resolve({
+          balance: 0,
+          debt: 0,
         });
       }
     });
@@ -31,7 +30,7 @@ export const doWithdraw = (userID: string, balanceDebt: IBalanceDebt, amount: nu
       if (err) { throw err; }
       const currDate = new Date();
       let stmt = `INSERT INTO transaction (uuid, sender, receiver, amount, trans_type, created_at) VALUES 
-        (${uuidStringToBinQuery(uuid())},${uuidStringToBinQuery(userID)},${uuidStringToBinQuery(userID)},?,?,?)`;
+        (${uuidStringToBinQuery(createUUID())},${uuidStringToBinQuery(userID)},${uuidStringToBinQuery(userID)},?,?,?)`;
       let param = [amount, 'WITHDRAW', currDate];
       db.query(stmt, param, (error:MysqlError | null) => {
         if (error) {
@@ -77,7 +76,7 @@ export const getUserDebt = async (userID:string, page:number, oneDataAtTime = tr
     const param : string[] = [];
     db.query(stmt, param, (err:MysqlError | null, results: any) => {
       if (err) reject(err);
-      if (typeof results[0] != "undefined") {
+      if (typeof results.length != "undefined" && results.length > 0) {
         resolve(results);
       } else {
         resolve([]);
@@ -90,13 +89,13 @@ export const getUserFinancialList = async (userID:string) => {
   return new Promise<IUserFinancial[]>((resolve, reject) => {
     const stmt = `SELECT SUM(D.amount) as amount, B.name as debtor, 
       ${binToUUIDStringQuery('D.debtor')} as debtorID, L.name as lender, 
-      ${binToUUIDStringQuery('D.lender')} as lenderID FROM Debt D
+      ${binToUUIDStringQuery('D.lender')} as lenderID FROM debt D
       LEFT JOIN user B ON D.debtor = B.uuid 
       LEFT JOIN user L ON D.lender = L.uuid
-      WHERE D.is_paid = false AND D.lender = ${uuidStringToBinQuery(userID)} OR D.debtor = ${uuidStringToBinQuery(userID)} GROUP BY D.lender, D.debtor;`;
+      WHERE D.is_paid = false AND (D.lender = ${uuidStringToBinQuery(userID)} OR D.debtor = ${uuidStringToBinQuery(userID)}) GROUP BY D.lender, D.debtor;`;
     db.query(stmt, [], (err:MysqlError | null, results: any) => {
       if (err) reject(err);
-      if (typeof results[0] != "undefined") {
+      if (typeof results.length != "undefined" && results.length > 0) {
         resolve(results);
       } else {
         resolve([]);

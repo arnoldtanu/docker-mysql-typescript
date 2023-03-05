@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 export interface IConfig {
   environment: string;
   namespace: string;

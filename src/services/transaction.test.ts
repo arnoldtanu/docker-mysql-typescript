@@ -145,12 +145,6 @@ describe('Test take money from sender', () => {
   });
 });
 
-// test('Test depositAndTranfer', async () => {
-// const functionCalled = jest.spyOn(input, 'printHelp');
-// await input.checkInput(rl, { uuid: "1A2B3C", name: 'Lorem' }, "help");
-// expect(functionCalled).toHaveBeenCalled();
-// });
-
 describe('Test take money from sender', () => {
   test('Test take money, sender have enough balance', async () => {
     const userBalanceCache : Map<string, IBalanceDebt> = new Map([[senderID, { balance: 100, debt: 0 }]]);

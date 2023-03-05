@@ -15,4 +15,4 @@ export const binToUUIDStringQuery = (fieldName: string) => {
   return `BIN_TO_UUID(${fieldName})`; //mysql
 };
 
-export const createUUID = () => uuid();
+export const createUUID = () => uuid().replace(/-/g, "").toUpperCase();

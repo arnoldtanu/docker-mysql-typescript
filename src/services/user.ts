@@ -1,18 +1,24 @@
-import { getUserIDAndBalance, register } from "../repositories/user";
+import { capitalizeFirstLetter } from "../helpers/common_helper";
+import { getUserIDAndBalance, IUserIDAndBalance, register } from "../repositories/user";
 import { printUserFinancialList } from "./transaction";
+
+const sayHello = async (username: string, data:IUserIDAndBalance) => {
+  console.log("Hello, " + capitalizeFirstLetter(username) + "!");
+  await printUserFinancialList(data.uuid, data);
+};
 
 export const login = async (username : string) => {
   try {
     let data = await getUserIDAndBalance(username);
     if (data.uuid.length > 0) {
-      console.log("Hello, " + username.toUpperCase() + "!");
-      await printUserFinancialList(data.uuid, data);
+      await sayHello(username, data);
       return {
         uuid: data.uuid,
         balance: data.balance,
       };
     } else {
       data = await register(username);
+      await sayHello(username, data);
       return {
         uuid: data.uuid,
         balance: data.balance,

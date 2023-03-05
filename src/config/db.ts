@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 export interface IdbConfig {
   host: string;
   database: string;
@@ -6,8 +9,8 @@ export interface IdbConfig {
 }
 
 export const dbConfig: IdbConfig = {
-  host: "db", //process.env.DB_HOST || "localhost",
-  database: "atm", //process.env.DB_DATABASE || "atm",
-  user: "root", //process.env.DB_USERNAME || "root",
-  password: "password", //process.env.DB_PASSWORD || "password",
+  host: process.env.DB_HOST || "localhost",
+  database: process.env.DB_DATABASE || "atm",
+  user: process.env.DB_USERNAME || "root",
+  password: process.env.DB_PASSWORD || "",
 };

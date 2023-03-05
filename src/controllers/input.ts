@@ -2,6 +2,7 @@ import * as readline from "readline";
 import { deposit, transfer, withdraw } from "../services/transaction";
 import { login } from "../services/user";
 import { IUser } from "../helpers/interfaces";
+import { capitalizeFirstLetter } from "../helpers/common_helper";
 
 export const checkInput = async (rl: readline.Interface, currentUser:IUser, userInput : string) => {
   const command = userInput.split(" ");
@@ -17,7 +18,7 @@ export const checkInput = async (rl: readline.Interface, currentUser:IUser, user
       printHelp();
       break;
     case "logout":
-      console.log("Goodbye, " + currentUser.name + "!");
+      console.log("Goodbye, " + capitalizeFirstLetter(currentUser.name) + "!");
       changeCurrentUser(currentUser);
       rl.setPrompt('> ');
       break;
@@ -42,6 +43,7 @@ export const checkInput = async (rl: readline.Interface, currentUser:IUser, user
     default:
       console.log(`unknown command: "${userInput}"`);
   }
+  console.log("");
   rl.prompt();
 };
 

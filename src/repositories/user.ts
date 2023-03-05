@@ -1,5 +1,4 @@
-import { v1 as uuid } from "uuid";
-import { uuidStringToBinQuery, binToUUIDStringQuery } from "../helpers/common_helper";
+import { uuidStringToBinQuery, binToUUIDStringQuery, createUUID } from "../helpers/common_helper";
 import { db } from "./mysql";
 import { MysqlError } from "mysql";
 
@@ -8,11 +7,12 @@ export interface IUserIDAndBalance {
   balance: number;
   debt: number;
 }
+
 export const register = async (username: string) => {
   return new Promise<IUserIDAndBalance>((resolve, reject) => {
     const currDate = new Date();
-    const generatedUUID : string = uuid();
-    const stmt = `INSERT INTO user (uuid, name, created_at, updated_at) VALUES (${uuidStringToBinQuery(generatedUUID)},?,?,?)`;
+    const generatedUUID : string = createUUID();
+    const stmt = `INSERT INTO user (uuid, name, created_at, updated_at,balance,outstanding_debt) VALUES (${uuidStringToBinQuery(generatedUUID)},?,?,?,0,0)`;
     const param = [username, currDate, currDate];
     db.query(stmt, param, (err:MysqlError | null, results: any) => {
       if (err) reject(err);
@@ -31,7 +31,7 @@ export const getUserIDAndBalance = async (username:string) => {
     const param = [username];
     db.query(stmt, param, (err:MysqlError | null, results: any) => {
       if (err) reject(err);
-      if (typeof results[0] != "undefined") {
+      if (typeof results.length != "undefined" && results.length > 0) {
         resolve({
           uuid: results[0].uuid,
           balance: results[0].balance,
@@ -43,6 +43,20 @@ export const getUserIDAndBalance = async (username:string) => {
           balance: 0,
           debt: 0,
         });
+      }
+    });
+  });
+};
+
+export const getUserName = async (userID:string) => {
+  return new Promise<string>((resolve, reject) => {
+    const stmt = `SELECT name FROM user WHERE uuid = ${uuidStringToBinQuery(userID)}`;
+    db.query(stmt, [], (err:MysqlError | null, results: any) => {
+      if (err) reject(err);
+      if (typeof results.length != "undefined" && results.length > 0) {
+        resolve(results[0].name);
+      } else {
+        resolve("");
       }
     });
   });
