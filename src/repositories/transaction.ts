@@ -142,8 +142,9 @@ const updateDebt = async (params:IUpdateDebt) => {
 
 const insertDebt = async (params:IDebt, currDate:Date) => {
   return new Promise<boolean>((resolve, reject) => {
-    let stmt = `INSERT INTO debt (uuid, debtor, lender, amount, created_at, is_paid, updated_at)
-      VALUES (${uuidStringToBinQuery("?", false)},${uuidStringToBinQuery("?", false)},${uuidStringToBinQuery("?", false)},?,?,?,?)`;
+    let stmt = `INSERT INTO debt (uuid, debtor, lender, amount, created_at, is_paid, updated_at, transaction_ref)
+      VALUES (${uuidStringToBinQuery("?", false)},${uuidStringToBinQuery("?", false)},${uuidStringToBinQuery("?", false)},?,?,?,?,
+      ${uuidStringToBinQuery("00000000000000000000000000000000", true)})`;
     let param : any[] = [
       params.uuid,
       params.debtor,
