@@ -1,0 +1,9 @@
+{
+  "verbose": true,
+  "transform": {
+    "^.+\\.tsx?$": "ts-jest"
+  },
+  "testPathIgnorePatterns" : [
+    "<rootDir>/build/" 
+  ]
+}

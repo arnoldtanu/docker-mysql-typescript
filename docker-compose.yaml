@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  db:
+    build: ./db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: atm
+    restart: always
+    container_name: database-atm
+  web:
+    tty: true
+    stdin_open: true
+    build: .
+    environment:
+      MYSQL_DATABASE: atm
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_HOST: db
+    depends_on:
+      - db
+    restart: on-failure
+    container_name: web-atm

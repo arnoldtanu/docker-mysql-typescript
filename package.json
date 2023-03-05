@@ -1,0 +1,44 @@
+{
+  "name": "atm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch-server": "npx nodemon",
+    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node build/index.js",
+    "lint": "eslint . --ext .ts",
+    "lint-and-fix": "eslint . --ext .ts --fix",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arnoldtanu/atm.git"
+  },
+  "author": "arnold (arnold.tanuwijaya@gmail.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arnoldtanu/atm/issues"
+  },
+  "homepage": "https://github.com/arnoldtanu/atm#readme",
+  "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "@types/mysql": "^2.15.21",
+    "@types/node": "^18.14.1",
+    "@types/uuid": "^9.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
+    "eslint": "^8.34.0",
+    "jest": "^29.4.3",
+    "nodemon": "^2.0.20",
+    "rimraf": "^4.1.2",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "mysql": "^2.18.1",
+    "uuid": "^9.0.0"
+  }
+}
