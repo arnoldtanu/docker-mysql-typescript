@@ -1,4 +1,4 @@
-#Mini ATM
+# Money
 
 An ATM simulation program that can send and receive virtual money and make transfers to friends, both as debt and cash.
 
